@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { CreatePost } from "@/app/_components/create-post";
+import { CreatePost } from "@/components/create-post";
 import { getServerAuthSession } from "@/server/auth";
 import { api } from "@/trpc/server";
 
@@ -71,7 +71,7 @@ async function CrudShowcase() {
   return (
     <div className="w-full max-w-xs">
       {latestPost ? (
-        <p className="truncate">Your most recent post: {latestPost.name}</p>
+        <p className="truncate">Your most recent post: {latestPost.title}</p>
       ) : (
         <p>You have no posts yet.</p>
       )}
