@@ -48,6 +48,9 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   },
+  pages: {
+    signIn: '/signin'
+  },
   adapter: PrismaAdapter(db),
   providers: [
     GoogleProvider({
