@@ -1,7 +1,8 @@
 'use client';
 
 import { signIn } from 'next-auth/react';
+import { Button } from './ui/button';
 
 export default function SignInButton() {
-    return <button onClick={() => signIn('google')}>Sign In</button>
+    return <Button onClick={() => signIn('google')}>Sign In</Button>
 }
