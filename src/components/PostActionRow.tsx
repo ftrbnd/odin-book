@@ -21,7 +21,7 @@ export function PostActionRow({ post, comments, likes }: { post: Post; comments:
         <FaComment className="mr-2 h-4 w-4" />
         {comments.length ?? 0}
       </Button>
-      <Button onClick={sendLike}>
+      <Button variant={'outline'} onClick={sendLike}>
         <FaThumbsUp className="mr-2 h-4 w-4" />
         {likes.length ?? 0}
       </Button>

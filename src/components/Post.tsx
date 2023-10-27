@@ -1,20 +1,14 @@
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader } from '@/components/ui/card';
 import { type User, type Post, type Comment, type Like } from '@prisma/client';
 import Image from 'next/image';
 import { PostActionRow } from './PostActionRow';
+import { PostTitle } from './PostTitle';
 
 export function Post({ post, user, comments, likes }: { post: Post; user: User; comments: Comment[]; likes: Like[] }) {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle className="font-bold text-xl flex gap-2 items-center">
-          <Avatar>
-            <AvatarImage src={user.image ?? 'https://github.com/shadcn.png'} />
-            <AvatarFallback>{user.name?.at(0)}</AvatarFallback>
-          </Avatar>
-          {user.name}
-        </CardTitle>
+        <PostTitle user={user} />
         <CardDescription className="text-sm">{post.createdAt.toLocaleDateString()}</CardDescription>
       </CardHeader>
       <CardContent>
