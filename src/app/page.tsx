@@ -1,17 +1,16 @@
-import SignOutButton from '@/components/SignOutButton';
-import { CreatePost } from '@/components/create-post';
-import { ModeToggle } from '@/components/ui/mode-toggle';
-import { getServerAuthSession } from '@/server/auth';
+import { Post } from '@/components/Post';
+import { SignOutButton } from '@/components/SignOutButton';
+import { api } from '@/trpc/server';
 
 export default async function Home() {
-  const session = await getServerAuthSession();
+  const posts = await api.post.getPosts.query();
 
   return (
-    <main className="flex flex-col items-center justify-center">
-      <h2>{session && `You are signed in as ${session.user.name}`}</h2>
-      <ModeToggle />
+    <main className="flex flex-col items-center justify-center px-8">
       <SignOutButton />
-      <CreatePost />
+      {posts.map((post) => (
+        <Post key={post.id} post={post} user={post.createdBy} comments={post.comments} likes={post.likes} />
+      ))}
     </main>
   );
 }
