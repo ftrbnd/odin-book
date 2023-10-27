@@ -7,6 +7,7 @@ import { TRPCReactProvider } from '@/trpc/react';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Navbar } from '@/components/Navbar';
 import { Separator } from '@/components/ui/separator';
+import { Toaster } from '@/components/ui/toaster';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -22,12 +23,13 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable} flex flex-col`}>
+      <body className={`font-sans ${inter.variable} flex flex-col items-center`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           <TRPCReactProvider headers={headers()}>
             <Navbar />
             <Separator />
             {children}
+            <Toaster />
           </TRPCReactProvider>
         </ThemeProvider>
       </body>
