@@ -4,6 +4,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@radix-ui/react-avatar';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { signOut, useSession } from 'next-auth/react';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 export function SessionNavItems() {
   const { data: session } = useSession();
@@ -21,6 +22,9 @@ export function SessionNavItems() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuItem>
+            <Link href={`/profile/${session.user.id}`}>Profile</Link>
+          </DropdownMenuItem>
           <DropdownMenuItem onClick={() => signOut()}>Sign Out</DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

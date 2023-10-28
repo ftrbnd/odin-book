@@ -10,7 +10,12 @@ export const userRouter = createTRPCRouter({
       include: {
         posts: {
           include: {
-            comments: true,
+            createdBy: true,
+            comments: {
+              include: {
+                createdBy: true
+              }
+            },
             likes: true
           }
         },

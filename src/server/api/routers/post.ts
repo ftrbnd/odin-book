@@ -11,11 +11,15 @@ export const postRouter = createTRPCRouter({
       }
     });
   }),
-  getPosts: protectedProcedure.query(({ ctx }) => {
+  getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
       include: {
         createdBy: true,
-        comments: true,
+        comments: {
+          include: {
+            createdBy: true
+          }
+        },
         likes: true
       }
     });

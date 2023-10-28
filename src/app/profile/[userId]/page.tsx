@@ -2,11 +2,13 @@ import { Post } from '@/components/Post';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { getServerAuthSession } from '@/server/auth';
 import { api } from '@/trpc/server';
-import { FaUserPlus } from 'react-icons/fa';
+import { FaUserEdit, FaUserPlus } from 'react-icons/fa';
 
 export default async function UserPage({ params }: { params: { userId: string } }) {
   const user = await api.user.getById.query(params.userId);
+  const session = await getServerAuthSession();
 
   if (!user) return null;
   return (
@@ -25,14 +27,22 @@ export default async function UserPage({ params }: { params: { userId: string } 
           <p>{user.following.length ?? 0} following</p>
         </CardContent>
         <CardFooter className="justify-end">
-          <Button>
-            <FaUserPlus className="mr-2 h-4 w-4" />
-            Add Friend
-          </Button>
+          {session?.user.id !== user.id ? (
+            <Button>
+              <FaUserPlus className="mr-2 h-4 w-4" />
+              Add Friend
+            </Button>
+          ) : (
+            <Button>
+              <FaUserEdit className="mr-2 h-4 w-4" />
+              {/* TODO: Implement edit profile */}
+              Edit
+            </Button>
+          )}
         </CardFooter>
       </Card>
       {user.posts.map((post) => (
-        <Post key={post.id} post={post} user={user} comments={post.comments} likes={post.likes} />
+        <Post key={post.id} post={post} />
       ))}
     </main>
   );
