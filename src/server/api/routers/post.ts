@@ -11,6 +11,13 @@ export const postRouter = createTRPCRouter({
       }
     });
   }),
+  getById: protectedProcedure.input(z.object({ postId: z.string().min(1) })).query(({ ctx, input }) => {
+    return ctx.db.post.findUnique({
+      where: {
+        id: input.postId
+      }
+    });
+  }),
   getAll: protectedProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
       include: {

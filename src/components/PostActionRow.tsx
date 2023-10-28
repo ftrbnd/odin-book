@@ -11,10 +11,12 @@ import { ToastAction } from './ui/toast';
 import { ScrollArea, ScrollBar } from './ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { type RouterOutputs } from '@/trpc/shared';
+import { useSession } from 'next-auth/react';
 
 export function PostActionRow({ post }: { post: RouterOutputs['post']['getAll'][0] }) {
   const [comment, setComment] = useState('');
 
+  const { data: session } = useSession();
   const router = useRouter();
 
   const createComment = api.comment.create.useMutation({
@@ -37,9 +39,41 @@ export function PostActionRow({ post }: { post: RouterOutputs['post']['getAll'][
     createComment.mutate({ text: comment, postId: post.id });
   };
 
-  const sendLike = () => {
-    // TODO: implement likes
-    console.log('Sending like...');
+  const createLike = api.like.create.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Failed to submit your like.',
+        action: <ToastAction altText="Try again">Try again</ToastAction>
+      });
+    }
+  });
+
+  const removeLike = api.like.remove.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Failed to remove your like.',
+        action: <ToastAction altText="Try again">Try again</ToastAction>
+      });
+    }
+  });
+
+  const toggleLike = () => {
+    const likeExists = post.likes.find((postLike) => postLike.likedById === session?.user.id);
+    if (likeExists) {
+      removeLike.mutate({ likeId: likeExists.id });
+    } else {
+      createLike.mutate({ postId: post.id });
+    }
   };
 
   const getTimestamp = (userComment: RouterOutputs['comment']['getAll'][0]) => {
@@ -66,7 +100,7 @@ export function PostActionRow({ post }: { post: RouterOutputs['post']['getAll'][
           <FaComment className="mr-2 h-4 w-4" />
           {post.comments.length ?? 0}
         </Button>
-        <Button variant={'outline'} onClick={sendLike}>
+        <Button variant={post.likes.some((postLike) => postLike.likedById === session?.user.id) ? 'default' : 'outline'} onClick={toggleLike}>
           <FaThumbsUp className="mr-2 h-4 w-4" />
           {post.likes.length ?? 0}
         </Button>
