@@ -21,6 +21,9 @@ export const postRouter = createTRPCRouter({
           }
         },
         likes: true
+      },
+      orderBy: {
+        createdAt: 'desc'
       }
     });
   })

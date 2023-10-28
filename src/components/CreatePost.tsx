@@ -36,8 +36,12 @@ export function CreatePost() {
       <Tabs defaultValue="status">
         <CardHeader>
           <TabsList>
-            <TabsTrigger value="status">Status</TabsTrigger>
-            <TabsTrigger value="photo">Photo</TabsTrigger>
+            <TabsTrigger value="status" className="w-full">
+              Status
+            </TabsTrigger>
+            <TabsTrigger value="photo" className="w-full">
+              Photo
+            </TabsTrigger>
           </TabsList>
         </CardHeader>
         <TabsContent value="status">
@@ -46,6 +50,7 @@ export function CreatePost() {
           </CardContent>
           <CardFooter className="justify-end">
             <Button
+              disabled={text === '' || createPost.isLoading}
               onClick={(e) => {
                 e.preventDefault();
                 createPost.mutate({ text });
