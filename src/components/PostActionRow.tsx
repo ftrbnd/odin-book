@@ -39,7 +39,7 @@ export function PostActionRow({ post }: { post: RouterOutputs['post']['getAll'][
     createComment.mutate({ text: comment, postId: post.id });
   };
 
-  const createLike = api.like.create.useMutation({
+  const toggleLike = api.post.toggleLike.useMutation({
     onSuccess: () => {
       router.refresh();
     },
@@ -52,29 +52,6 @@ export function PostActionRow({ post }: { post: RouterOutputs['post']['getAll'][
       });
     }
   });
-
-  const removeLike = api.like.remove.useMutation({
-    onSuccess: () => {
-      router.refresh();
-    },
-    onError: () => {
-      toast({
-        variant: 'destructive',
-        title: 'Uh oh! Something went wrong.',
-        description: 'Failed to remove your like.',
-        action: <ToastAction altText="Try again">Try again</ToastAction>
-      });
-    }
-  });
-
-  const toggleLike = () => {
-    const likeExists = post.likes.find((postLike) => postLike.likedById === session?.user.id);
-    if (likeExists) {
-      removeLike.mutate({ likeId: likeExists.id });
-    } else {
-      createLike.mutate({ postId: post.id });
-    }
-  };
 
   const getTimestamp = (userComment: RouterOutputs['comment']['getAll'][0]) => {
     const date = userComment.createdAt;
@@ -100,7 +77,7 @@ export function PostActionRow({ post }: { post: RouterOutputs['post']['getAll'][
           <FaComment className="mr-2 h-4 w-4" />
           {post.comments.length ?? 0}
         </Button>
-        <Button variant={post.likes.some((postLike) => postLike.likedById === session?.user.id) ? 'default' : 'outline'} onClick={toggleLike}>
+        <Button variant={post.likes.some((postLike) => postLike.likedById === session?.user.id) ? 'default' : 'outline'} onClick={() => toggleLike.mutate({ postId: post.id })}>
           <FaThumbsUp className="mr-2 h-4 w-4" />
           {post.likes.length ?? 0}
         </Button>
