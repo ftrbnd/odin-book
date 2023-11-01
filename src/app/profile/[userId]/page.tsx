@@ -16,7 +16,7 @@ export default async function UserPage({ params }: { params: { userId: string } 
             <AvatarImage src={user.image ?? 'https://github.com/shadcn.png'} />
             <AvatarFallback>{user.name?.at(0)}</AvatarFallback>
           </Avatar>
-          <CardTitle className="font-bold text-5xl flex justify-center gap-2 items-center">{user.name}</CardTitle>
+          <CardTitle className="text-center font-bold text-5xl flex justify-center gap-2 items-center">{user.name}</CardTitle>
         </CardHeader>
         <ProfileActionRow profileUser={user} />
       </Card>

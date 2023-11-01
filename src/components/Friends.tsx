@@ -55,63 +55,61 @@ export function Friends({ user }: { user: RouterOutputs['user']['me'] }) {
   };
 
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Friends</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {getFriends().length > 0 ? (
-            getFriends().map((friend) => (
-              <Link href={`/profile/${friend.id}`} key={friend.id}>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Friends</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {getFriends().length > 0 ? (
+          getFriends().map((friend) => (
+            <Link href={`/profile/${friend.id}`} key={friend.id}>
+              <div className="flex justify-start items-center gap-2 p-2 rounded hover:bg-secondary hover:cursor-pointer">
+                <Avatar>
+                  <AvatarImage src={friend.image ?? 'https://github.com/shadcn.png'} />
+                  <AvatarFallback>{friend.name?.at(0)}</AvatarFallback>
+                </Avatar>
+                <p className="font-semibold">{friend.name}</p>
+              </div>
+            </Link>
+          ))
+        ) : (
+          <Button variant={'link'} onClick={() => router.push('/explore')}>
+            Add some friends!
+          </Button>
+        )}
+      </CardContent>
+      <CardHeader className="pt-0">
+        <CardTitle>Friend Requests</CardTitle>
+      </CardHeader>
+      <CardContent>
+        {getFriendRequests().length > 0 ? (
+          getFriendRequests().map((request) => (
+            <div key={request.id} className="flex items-center">
+              <Link href={`/profile/${request.id}`} className="flex-grow">
                 <div className="flex justify-start items-center gap-2 p-2 rounded hover:bg-secondary hover:cursor-pointer">
                   <Avatar>
-                    <AvatarImage src={friend.image ?? 'https://github.com/shadcn.png'} />
-                    <AvatarFallback>{friend.name?.at(0)}</AvatarFallback>
+                    <AvatarImage src={request.image ?? 'https://github.com/shadcn.png'} />
+                    <AvatarFallback>{request.name?.at(0)}</AvatarFallback>
                   </Avatar>
-                  <p className="font-semibold">{friend.name}</p>
+                  <p className="font-semibold">{request.name}</p>
                 </div>
               </Link>
-            ))
-          ) : (
-            <Button variant={'link'} onClick={() => router.push('/explore')}>
-              Add some friends!
-            </Button>
-          )}
-        </CardContent>
-        <CardHeader className="pt-0">
-          <CardTitle>Friend Requests</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {getFriendRequests().length > 0 ? (
-            getFriendRequests().map((request) => (
-              <div key={request.id} className="flex items-center">
-                <Link href={`/profile/${request.id}`} className="flex-grow">
-                  <div className="flex justify-start items-center gap-2 p-2 rounded hover:bg-secondary hover:cursor-pointer">
-                    <Avatar>
-                      <AvatarImage src={request.image ?? 'https://github.com/shadcn.png'} />
-                      <AvatarFallback>{request.name?.at(0)}</AvatarFallback>
-                    </Avatar>
-                    <p className="font-semibold">{request.name}</p>
-                  </div>
-                </Link>
-                <div className="flex gap-2">
-                  <Button onClick={() => acceptRequest.mutate({ userId: request.id })} variant={'outline'} color="cyan">
-                    <FaCheck />
-                  </Button>
-                  <Button onClick={() => rejectRequest.mutate({ userId: request.id })} variant={'outline'}>
-                    <FaTimes />
-                  </Button>
-                </div>
+              <div className="flex gap-2">
+                <Button onClick={() => acceptRequest.mutate({ userId: request.id })} variant={'outline'} color="cyan">
+                  <FaCheck />
+                </Button>
+                <Button onClick={() => rejectRequest.mutate({ userId: request.id })} variant={'outline'}>
+                  <FaTimes />
+                </Button>
               </div>
-            ))
-          ) : (
-            <Button variant={'ghost'} disabled>
-              No new requests.
-            </Button>
-          )}
-        </CardContent>
-      </Card>
-    </>
+            </div>
+          ))
+        ) : (
+          <Button variant={'ghost'} disabled>
+            No new requests.
+          </Button>
+        )}
+      </CardContent>
+    </Card>
   );
 }
