@@ -31,8 +31,6 @@ export function ProfileActionRow({ profileUser }: { profileUser: RouterOutputs['
   });
 
   const getFriendStatus = (): FriendStatus => {
-    console.log('profile user: ', profileUser?.followedBy.some((follower) => follower.id === session?.user.id), profileUser?.following.some((follower) => follower.id === session?.user.id));
-
     if (profileUser?.followedBy.some((follower) => follower.id === session?.user.id) && profileUser.following.some((follower) => follower.id === session?.user.id)) {
       return 'FRIENDS';
     }
@@ -45,9 +43,7 @@ export function ProfileActionRow({ profileUser }: { profileUser: RouterOutputs['
   const getFriendCount = () => {
     const overlappingUsers = profileUser?.followedBy.filter((follower) => profileUser.following.some((followee) => followee.id === follower.id));
 
-    console.log('Overlaps: ', overlappingUsers);
-
-    return `${overlappingUsers?.length ?? 0} ${(overlappingUsers?.length ?? 0) > 1 ? 'friends' : 'friend'}`;
+    return `${overlappingUsers?.length ?? 0} ${overlappingUsers?.length === 1 ? 'friend' : 'friends'}`;
   };
 
   return (

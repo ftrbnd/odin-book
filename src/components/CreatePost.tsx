@@ -32,7 +32,7 @@ export function CreatePost() {
   });
 
   return (
-    <Card className="w-full">
+    <Card className="w-full md:w-3/5 lg:w-2/5">
       <Tabs defaultValue="status">
         <CardHeader>
           <TabsList>
