@@ -28,6 +28,7 @@ export function Friends({ user }: { user: RouterOutputs['user']['me'] }) {
       });
     }
   });
+
   const rejectRequest = api.user.rejectRequest.useMutation({
     onSuccess: () => {
       router.refresh();
@@ -37,6 +38,20 @@ export function Friends({ user }: { user: RouterOutputs['user']['me'] }) {
         variant: 'destructive',
         title: 'Uh oh! Something went wrong.',
         description: 'Failed to reject friend request.',
+        action: <ToastAction altText="Try again">Try again</ToastAction>
+      });
+    }
+  });
+
+  const cancelOutgoingRequest = api.user.cancelOutgoingRequest.useMutation({
+    onSuccess: () => {
+      router.refresh();
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Failed to cancel outgoing friend request.',
         action: <ToastAction altText="Try again">Try again</ToastAction>
       });
     }
@@ -52,6 +67,12 @@ export function Friends({ user }: { user: RouterOutputs['user']['me'] }) {
     const friendRequests = myUser?.followedBy.filter((follower) => !myUser.following.some((followee) => followee.id === follower.id));
 
     return friendRequests ?? [];
+  };
+
+  const getOutgoingRequests = () => {
+    const outgoingRequests = myUser?.following.filter((request) => !myUser.followedBy.some((friend) => friend.id === request.id));
+
+    return outgoingRequests ?? [];
   };
 
   return (
@@ -110,6 +131,31 @@ export function Friends({ user }: { user: RouterOutputs['user']['me'] }) {
           </Button>
         )}
       </CardContent>
+      {getOutgoingRequests().length > 0 && (
+        <>
+          <CardHeader className="pt-0">
+            <CardTitle>Outgoing Requests</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {getOutgoingRequests().map((request) => (
+              <div key={request.id} className="flex items-center">
+                <Link href={`/profile/${request.id}`} className="flex-grow">
+                  <div className="flex justify-start items-center gap-2 p-2 rounded hover:bg-secondary hover:cursor-pointer">
+                    <Avatar>
+                      <AvatarImage src={request.image ?? 'https://github.com/shadcn.png'} />
+                      <AvatarFallback>{request.name?.at(0)}</AvatarFallback>
+                    </Avatar>
+                    <p className="font-semibold">{request.name}</p>
+                  </div>
+                </Link>
+                <Button onClick={() => cancelOutgoingRequest.mutate({ userId: request.id })} variant={'outline'}>
+                  <FaTimes />
+                </Button>
+              </div>
+            ))}
+          </CardContent>
+        </>
+      )}
     </Card>
   );
 }

@@ -27,6 +27,28 @@ export const userRouter = createTRPCRouter({
       }
     });
   }),
+  getAll: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.user.findMany({
+      include: {
+        posts: {
+          include: {
+            createdBy: true,
+            comments: {
+              include: {
+                createdBy: true
+              }
+            },
+            likes: true
+          },
+          orderBy: {
+            createdAt: 'desc'
+          }
+        },
+        followedBy: true,
+        following: true
+      }
+    });
+  }),
   me: protectedProcedure.query(({ ctx }) => {
     return ctx.db.user.findUnique({
       where: {
@@ -141,6 +163,27 @@ export const userRouter = createTRPCRouter({
       },
       data: {
         following: { disconnect: { id: ctx.session.user.id } }
+      }
+    });
+  }),
+  cancelOutgoingRequest: protectedProcedure.input(z.object({ userId: z.string().min(1) })).mutation(async ({ ctx, input }) => {
+    await ctx.db.user.update({
+      where: {
+        id: ctx.session.user.id
+      },
+      data: {
+        following: {
+          disconnect: { id: input.userId }
+        }
+      }
+    });
+
+    return ctx.db.user.update({
+      where: {
+        id: input.userId
+      },
+      data: {
+        followedBy: { disconnect: { id: ctx.session.user.id } }
       }
     });
   })

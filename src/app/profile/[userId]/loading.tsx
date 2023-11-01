@@ -13,9 +13,7 @@ export default function LoadingUserPage() {
           <CardTitle className="font-bold text-5xl flex justify-center gap-2 items-center">...</CardTitle>
         </CardHeader>
         <CardContent className="flex justify-center gap-2">
-          <p>0 followers</p>
-          <p>•</p>
-          <p>0 following</p>
+          <p>0 friends</p>
         </CardContent>
       </Card>
     </main>

@@ -8,11 +8,18 @@ export async function Navbar({ className, ...props }: React.HTMLAttributes<HTMLE
   const session = await getServerAuthSession();
 
   return (
-    <nav className={cn('flex w-full p-2 bg-primary justify-between space-x-4 lg:space-x-6', className)} {...props}>
+    <nav className={cn('flex w-full p-2 bg-primary justify-between items-center space-x-4 lg:space-x-6', className)} {...props}>
       <h1 className="text-primary-foreground text-2xl font-bold">
         <Link href={'/'}>odinbook</Link>
       </h1>
       <ul className="flex gap-2 items-center">
+        {session && (
+          <li>
+            <h2 className="text-primary-foreground text-lg font-bold">
+              <Link href={'/explore'}>explore</Link>
+            </h2>
+          </li>
+        )}
         <li>
           <ModeToggle />
         </li>

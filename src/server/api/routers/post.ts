@@ -34,21 +34,49 @@ export const postRouter = createTRPCRouter({
       }
     });
   }),
+  getSuggested: protectedProcedure.query(async ({ ctx }) => {
+    const postsCount = await ctx.db.post.count();
+    const skip = Math.floor(Math.random() * postsCount);
+
+    return ctx.db.post.findMany({
+      take: 5,
+      skip: skip,
+      include: {
+        createdBy: true,
+        comments: {
+          include: {
+            createdBy: true
+          }
+        },
+        likes: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }),
   getFriendPosts: protectedProcedure.query(({ ctx }) => {
     return ctx.db.post.findMany({
       where: {
-        createdBy: {
-          followedBy: {
-            some: {
-              id: ctx.session.user.id
+        OR: [
+          {
+            createdBy: {
+              followedBy: {
+                some: {
+                  id: ctx.session.user.id
+                }
+              },
+              following: {
+                some: {
+                  id: ctx.session.user.id
+                }
+              }
             }
           },
-          following: {
-            some: {
-              id: ctx.session.user.id
-            }
+          {
+            createdById: ctx.session.user.id
           }
-        }
+        ]
       },
       include: {
         createdBy: true,
