@@ -21,9 +21,7 @@ export default async function Home() {
           <div>LEFT BAR TBD</div>
         </TabsContent>
         <TabsContent value="timeline">
-          <div className="flex flex-col gap-4">
-            <Posts />
-          </div>
+          <Posts />
         </TabsContent>
         <TabsContent value="friends">
           <Friends user={user} />

@@ -2,22 +2,47 @@
 
 import { useSession } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
-import { FaUserEdit, FaUserPlus, FaUserMinus, FaUserClock } from 'react-icons/fa';
+import { FaUserEdit, FaUserPlus, FaUserMinus, FaUserClock, FaSave, FaTimes } from 'react-icons/fa';
 import { CardContent, CardFooter } from './ui/card';
 import { type RouterOutputs } from '@/trpc/shared';
 import { api } from '@/trpc/react';
 import { useRouter } from 'next/navigation';
 import { toast } from './ui/use-toast';
 import { ToastAction } from './ui/toast';
+import { useState } from 'react';
+import { Input } from './ui/input';
 
 type FriendStatus = 'FRIENDS' | 'REQUEST_SENT' | 'NOT_FRIENDS';
 
-export function ProfileActionRow({ profileUser }: { profileUser: RouterOutputs['user']['getById'] }) {
+interface Props {
+  profileUser: RouterOutputs['user']['getById'];
+}
+
+export function ProfileActionRow({ profileUser }: Props) {
+  const [editing, setEditing] = useState(false);
+  const [newBio, setNewBio] = useState(profileUser?.bio ?? '');
+
   const { data: session } = useSession();
   const router = useRouter();
 
+  const editBio = api.user.editBio.useMutation({
+    onSuccess: () => {
+      router.refresh();
+      setEditing(false);
+    },
+    onError: () => {
+      toast({
+        variant: 'destructive',
+        title: 'Uh oh! Something went wrong.',
+        description: 'Failed to edit your bio.',
+        action: <ToastAction altText="Try again">Try again</ToastAction>
+      });
+    }
+  });
+
   const toggleFriend = api.user.toggleFriend.useMutation({
     onSuccess: () => {
+      setEditing(false);
       router.refresh();
     },
     onError: () => {
@@ -48,8 +73,9 @@ export function ProfileActionRow({ profileUser }: { profileUser: RouterOutputs['
 
   return (
     <>
-      <CardContent className="flex justify-center gap-2">
-        <p>{getFriendCount()}</p>
+      <CardContent className="flex flex-col items-center justify-center gap-2">
+        {editing ? <Input type="text" placeholder="Bio" value={newBio} onChange={(e) => setNewBio(e.target.value)} /> : <p>{profileUser?.bio}</p>}
+        <p className="font-semibold">{getFriendCount()}</p>
       </CardContent>
       <CardFooter className="justify-end">
         {session?.user.id !== profileUser?.id ? (
@@ -73,10 +99,32 @@ export function ProfileActionRow({ profileUser }: { profileUser: RouterOutputs['
               </>
             )}
           </Button>
+        ) : editing ? (
+          <div className="flex gap-2">
+            <Button
+              variant={'destructive'}
+              onClick={() => {
+                setEditing(false);
+                setNewBio(profileUser?.bio);
+              }}
+            >
+              <FaTimes className="mr-2 h-4 w-4" />
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (newBio !== profileUser?.bio) editBio.mutate({ newBio });
+                setEditing(false);
+              }}
+              disabled={editBio.isLoading}
+            >
+              <FaSave className="mr-2 h-4 w-4" />
+              Save
+            </Button>
+          </div>
         ) : (
-          <Button>
+          <Button onClick={() => setEditing(true)}>
             <FaUserEdit className="mr-2 h-4 w-4" />
-            {/* TODO: Implement edit profile */}
             Edit
           </Button>
         )}

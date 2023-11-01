@@ -6,7 +6,7 @@ export async function Posts() {
   const posts = await api.post.getFriendPosts.query();
 
   return (
-    <>
+    <div className="flex flex-col gap-4">
       {posts.length > 0 ? (
         posts.map((post) => <Post key={post.id} post={post} />)
       ) : (
@@ -17,6 +17,6 @@ export async function Posts() {
           </CardHeader>
         </Card>
       )}
-    </>
+    </div>
   );
 }

@@ -60,6 +60,16 @@ export const userRouter = createTRPCRouter({
       }
     });
   }),
+  editBio: protectedProcedure.input(z.object({ newBio: z.string() })).mutation(({ ctx, input }) => {
+    return ctx.db.user.update({
+      where: {
+        id: ctx.session.user.id
+      },
+      data: {
+        bio: input.newBio
+      }
+    });
+  }),
   toggleFriend: protectedProcedure.input(z.object({ userId: z.string().min(1) })).mutation(async ({ ctx, input }) => {
     const user = await ctx.db.user.findUnique({
       where: {
