@@ -1,11 +1,10 @@
-import { Post } from '@/components/Post';
 import { CreatePost } from '@/components/CreatePost';
 import { api } from '@/trpc/server';
 import { Friends } from '@/components/Friends';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Posts } from '@/components/Posts';
 
 export default async function Home() {
-  const posts = await api.post.getAll.query();
   const user = await api.user.me.query();
 
   return (
@@ -23,9 +22,7 @@ export default async function Home() {
         </TabsContent>
         <TabsContent value="timeline">
           <div className="flex flex-col gap-4">
-            {posts.map((post) => (
-              <Post key={post.id} post={post} />
-            ))}
+            <Posts />
           </div>
         </TabsContent>
         <TabsContent value="friends">
@@ -36,9 +33,7 @@ export default async function Home() {
       <div className="w-full hidden lg:grid lg:grid-cols-3 lg:gap-4 ">
         <div>LEFT BAR TBD</div>
         <div className="flex flex-col gap-4">
-          {posts.map((post) => (
-            <Post key={post.id} post={post} />
-          ))}
+          <Posts />
         </div>
         <div>
           <Friends user={user} />

@@ -34,6 +34,36 @@ export const postRouter = createTRPCRouter({
       }
     });
   }),
+  getFriendPosts: protectedProcedure.query(({ ctx }) => {
+    return ctx.db.post.findMany({
+      where: {
+        createdBy: {
+          followedBy: {
+            some: {
+              id: ctx.session.user.id
+            }
+          },
+          following: {
+            some: {
+              id: ctx.session.user.id
+            }
+          }
+        }
+      },
+      include: {
+        createdBy: true,
+        comments: {
+          include: {
+            createdBy: true
+          }
+        },
+        likes: true
+      },
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
+  }),
   toggleLike: protectedProcedure.input(z.object({ postId: z.string().min(1) })).mutation(async ({ ctx, input }) => {
     const post = await ctx.db.post.findUnique({
       where: {
