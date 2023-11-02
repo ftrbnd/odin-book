@@ -20,7 +20,7 @@ interface Props {
 
 export function ProfileActionRow({ profileUser }: Props) {
   const [editing, setEditing] = useState(false);
-  const [newBio, setNewBio] = useState(profileUser?.bio ?? '');
+  const [newBio, setNewBio] = useState('');
 
   const { data: session } = useSession();
   const router = useRouter();
@@ -105,7 +105,7 @@ export function ProfileActionRow({ profileUser }: Props) {
               variant={'destructive'}
               onClick={() => {
                 setEditing(false);
-                setNewBio(profileUser?.bio);
+                setNewBio('');
               }}
             >
               <FaTimes className="mr-2 h-4 w-4" />
@@ -113,7 +113,7 @@ export function ProfileActionRow({ profileUser }: Props) {
             </Button>
             <Button
               onClick={() => {
-                if (newBio !== profileUser?.bio) editBio.mutate({ newBio });
+                if (newBio && newBio !== profileUser?.bio) editBio.mutate({ newBio });
                 setEditing(false);
               }}
               disabled={editBio.isLoading}
