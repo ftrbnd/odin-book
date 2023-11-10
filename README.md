@@ -46,8 +46,6 @@
 
 ### Screenshots
 
-TODO: Add screenshots
-
 ![Product Name Screen Shot][product-screenshot-1]
 ![Product Name Screen Shot][product-screenshot-2]
 ![Product Name Screen Shot][product-screenshot-3]
@@ -89,6 +87,6 @@ TODO: Add screenshots
 [JWT]: https://img.shields.io/badge/jwt-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white
 [Mongoose]: https://img.shields.io/badge/mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white
 [Axios]: https://img.shields.io/badge/axios-5A29E4?style=for-the-badge&logo=axios&logoColor=white
-[product-screenshot-1]: asdf
-[product-screenshot-2]: asdf
-[product-screenshot-3]: asdf
+[product-screenshot-1]: https://i.imgur.com/rbZv6iO.png
+[product-screenshot-2]: https://i.imgur.com/tRnnW3M.png
+[product-screenshot-3]: https://i.imgur.com/WJpD2hw.png
